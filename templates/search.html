@@ -2,11 +2,26 @@
 
 {% block content %}
 <h1 id="site-title">ASRS Redone</h1>
-<h3>Search, filter, and view up to 30,000 United States aviation incident reports.</h3>
+<h3>Search and view United States aviation incident reports.</h3>
 
-<form class="example" action="action_page.php">
-  <input type="text" placeholder="What are you looking for?" name="search">
-  <button type="submit"><i class="fa fa-search"></i></button>
+<form method="GET" action="/">
+  <input id="searchBar" type="text" name="query" value="{{query or ''}}" placeholder="What are you looking for?">
+  <button id="searchBtn" type="submit"><i class="fa fa-search"></i></button>
 </form>
 
+{% if results %}
+    <h2>Results for "{{ query }}":</h2>
+    <ol>
+      {% for result in results %}
+        <li>
+          <a href="#"><strong>ID: </strong>{{ result.doc.ACN }}</a>  <br>
+          <strong>Score:</strong> {{ "%.2f" | format(result.score) }} <br>
+          <strong>Synopsis:</strong> {{ result.doc.Synopsis | join(" ") or "No synopsis found" }}
+        </li>
+        <br>
+      {% endfor %}
+    </ol>
+  {% elif query %}
+    <p>No results found for "{{ query }}".</p>
+  {% endif %}
 {% endblock %}

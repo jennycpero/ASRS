@@ -35,6 +35,7 @@ h1 {
 h2 {
     font-weight:bold !important;
     font-size:3em;
+    text-align:left;
 }
 
 h3 {
@@ -43,7 +44,7 @@ h3 {
 }
 
 /* Style the search field */
-form.example input[type=text] {
+#searchBar {
   padding: 10px;
   font-size: 17px;
   border: 1px solid grey;
@@ -53,25 +54,30 @@ form.example input[type=text] {
 }
 
 /* Style the submit button */
-form.example button {
-  float: left;
-  width: 20%;
-  padding: 10px;
-  background: #2196F3;
-  color: white;
-  font-size: 17px;
-  border: 1px solid grey;
-  border-left: none; /* Prevent double borders */
-  cursor: pointer;
+#searchBtn {
+  float: left !important;
+  width: 20% !important;
+  padding: 10px !important;
+  background: #2196F3 !important;
+  color: white !important;
+  font-size: 17px !important;
+  border: 1px solid grey !important;
+  border-left: none !important; /* Prevent double borders */
+  cursor: pointer !important;
+  margin-bottom:5%;
 }
 
-form.example button:hover {
+.fa-search button:hover {
   background: #0b7dda;
 }
 
 /* Clear floats */
-form.example::after {
+.fa-search::after {
   content: "";
   clear: both;
   display: table;
+}
+
+#results {
+    padding: 5%;
 }

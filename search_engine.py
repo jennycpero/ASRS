@@ -7,35 +7,30 @@ from database import connect_db
 from nltk.tokenize import word_tokenize
 nltk.download("punkt_tab")  # Required once
 import numpy as np
-from tqdm import tqdm  # Optional but useful
-import pickle  # for caching
+import pickle
 
-CACHE_FILE = "bm25_cache.pkl"
 collection = connect_db()
 collection.create_index("tokens", background=True)
 
+"""
 print("Getting tokens...")
-docs = list(collection.find({"tokens": {"$exists": True}}, {"_id": 1, "tokens": 1}).limit(1000).batch_size(100))
+docs = list(collection.find({"tokens": {"$exists": True}}, {"_id": 1, "tokens": 1}, batch_size=500))
 
 print("Building corpus...")
 corpus = [doc["tokens"] for doc in docs]
 doc_id_map = [doc["_id"] for doc in docs]
 
+"""
 print("Building BM25...")
 # Build and cache BM25 index
 bm25 = BM25Okapi(corpus, k1=1.5, b=0.5)
+
 with open("bm25_index.pkl", "wb") as f:
     pickle.dump((bm25, doc_id_map), f)
 
-# Now build BM25
-bm25 = BM25Okapi(corpus, k1=1.5, b=0.5)
-
-with open("bm25_index.pkl", "wb") as f:
-    pickle.dump(bm25, f)
-
 # QUERY
 print("Reading query...")
-query = "bird strike"
+query = "taxiing aircraft"
 tokenized_query = word_tokenize(query.lower())
 scores = bm25.get_scores(tokenized_query)
 
