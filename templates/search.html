@@ -14,7 +14,7 @@
     <ol>
       {% for result in results %}
         <li>
-          <a href="#"><strong>ID: </strong>{{ result.doc.ACN }}</a>  <br>
+          <a href="#"><strong>ACN: </strong>{{ result.doc.ACN }}</a>  <br>
           <strong>Score:</strong> {{ "%.2f" | format(result.score) }} <br>
           <strong>Synopsis:</strong> {{ result.doc.Synopsis | join(" ") or "No synopsis found" }}
         </li>

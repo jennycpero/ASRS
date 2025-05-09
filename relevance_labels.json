@@ -1,0 +1,12 @@
+{
+  "bird strike": ["67e01e29c80d2a168b853ae5","67e01e2ec80d2a168b855e01","67e01e24c80d2a168b8514eb"],
+  "engine fire": ["67e01e2dc80d2a168b855305", "67e01e12c80d2a168b84716e","67e01e1ac80d2a168b84c338"],
+  "loss of cabin pressure": ["67e01e19c80d2a168b84bed8", "67e01e18c80d2a168b84b214","67e01e2bc80d2a168b8549ac"],
+  "autopilot malfunction": ["67e01e19c80d2a168b84bcc7", "67e01e1bc80d2a168b84d2da", "67e01e33c80d2a168b8581a3"],
+  "rudder issue": ["67e01e2cc80d2a168b854ccb", "67e01e11c80d2a168b846956","67e01e27c80d2a168b852758"],
+  "taxiing aircraft": ["67e01e0fc80d2a168b845e9e", "67e01e2bc80d2a168b85485f","67e01e23c80d2a168b851008"],
+  "gear collapse": ["67e01e1dc80d2a168b84e364", "67e01e25c80d2a168b8520ec","67e01e18c80d2a168b84b050"],
+  "air traffic controller issue": ["67e01e22c80d2a168b850d61", "67e01e0fc80d2a168b845b5c","67e01e1bc80d2a168b84d002"],
+  "engine failure": ["67e01e25c80d2a168b8520aa", "67e01e1dc80d2a168b84e2dd","67e01e11c80d2a168b846e3a"],
+  "pilot fatigue": ["67e01e32c80d2a168b858087", "67e01e2ac80d2a168b853ed0","67e01e2ec80d2a168b855f74"]
+}
