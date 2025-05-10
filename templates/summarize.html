@@ -2,4 +2,28 @@
 
 {% block content %}
 <h2>Summarize</h2>
+
+<div class="container">
+    <p>Enter a report number to generate a summary of that report, and compare it with the Synopsis field.</p>
+    <form method="POST">
+        <input id="summInput" type="text" name="acn" placeholder="Enter ACN Number" value="{{ acn }}" required>
+        <button id="summSubmit" type="submit">Generate and Compare</button>
+    </form>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="column box">
+            <h4>Generated Summary</h4>
+            <p>{{ summary }}</p>
+            <p><i>Score:</i> {{ scores.rouge-1['f'] if scores }}</p>
+        </div>
+        <div class="column box">
+            <h4>Report Synopsis</h4>
+            <p>{{ synopsis }}</p>
+            <p><i>Score:</i> {{ scores.rouge-1['f'] if scores }}</p>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

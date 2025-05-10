@@ -16,6 +16,10 @@
     font-weight:bold;
 }
 
+p {
+    font-size:1.25em;
+}
+
 a {
     text-decoration: none !important;
 }
@@ -43,7 +47,11 @@ h3 {
     margin-bottom:5% !important;
 }
 
-/* Style the search field */
+h4 {
+    font-weight:bold !important;
+    margin-bottom:5%;
+}
+
 #searchBar {
   padding: 10px;
   font-size: 17px;
@@ -53,7 +61,6 @@ h3 {
   background: #f1f1f1;
 }
 
-/* Style the submit button */
 #searchBtn {
   float: left !important;
   width: 20% !important;
@@ -68,10 +75,10 @@ h3 {
 }
 
 .fa-search button:hover {
-  background: #0b7dda;
+  background: #0b7dda !important;
+  transition:.2s !important;
 }
 
-/* Clear floats */
 .fa-search::after {
   content: "";
   clear: both;
@@ -80,4 +87,32 @@ h3 {
 
 #results {
     padding: 5%;
+}
+
+#summInput {
+    width:30%;
+    font-size:20px;
+}
+
+#summSubmit {
+    width:30%;
+    font-size:20px;
+    cursor:pointer;
+    background: #2196F3 !important;
+    color: white !important;
+    border: 1px solid grey !important;
+    font-weight:bold;
+}
+
+#summSubmit:hover {
+  background: #0b7dda !important;
+  transition:.2s !important;
+}
+
+.container {
+    margin-bottom: 5% !important;
+}
+
+.column {
+    padding:5% !important;
 }

@@ -21,6 +21,6 @@ for doc in tqdm(docs, desc="Building corpus"):
 print("calculating score")
 bm25 = BM25Okapi(corpus, k1=1.5, b=0.5)
 
-print("caching socre")
+print("caching score")
 with open("bm25_index.pkl", "wb") as f:
     pickle.dump((bm25, doc_id_map), f)
