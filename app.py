@@ -9,6 +9,7 @@ import nltk
 from nltk.tokenize import word_tokenize
 import numpy as np
 import pickle  # for caching
+from summarization import summarize_and_compare
 
 nltk.download("punkt_tab")  # Required once
 
@@ -50,9 +51,15 @@ def statistics():
     return render_template("statistics.html")
 
 
-@app.route("/summarize")
+@app.route("/summarize", methods=["GET", "POST"])
 def summarize():
-    return render_template("summarize.html")
+    result = None
+    if request.method == 'POST':
+        acn = request.form.get('acn')
+        print(acn)
+        result = summarize_and_compare(acn)
+
+    return render_template("summarize.html", result=result)
 
 
 if __name__ == '__main__':

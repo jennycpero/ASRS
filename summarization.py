@@ -1,46 +1,49 @@
 # fields: everything but synopsis
 from transformers import T5Tokenizer, T5ForConditionalGeneration
-from pymongo import MongoClient
-import torch
 from database import connect_db
-import pickle
-import re
 from rouge_score import rouge_scorer
+from bert_score import score as bert_score_fn
 
-# BUILD CORPUS
 collection = connect_db()
-corpus = []
 
 # Load model and tokenizer
-model_name = "t5-large"
+model_name = "t5-small"
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
 
 # --- Utility: Recursively extract text (excluding certain keys) ---
-def collect_text_fields(doc, exclude_keys={"Synopsis", "Tokens"}):
-    collected = []
+def collect_text_fields(document, include_keys=None):
+    if include_keys is None:
+        include_keys = []
 
-    def recurse(obj, parent_key=""):
-        if isinstance(obj, dict):
-            for k, v in obj.items():
-                if k in exclude_keys:
-                    continue
-                recurse(v, k)
-        elif isinstance(obj, list):
-            for item in obj:
-                recurse(item, parent_key)
-        elif isinstance(obj, str):
-            collected.append(obj.strip())
+    collected_text = []
 
-    recurse(doc)
-    return " ".join(collected).replace("\n", " ")
+    def traverse(d, parent_key=""):
+        if isinstance(d, dict):
+            for k, v in d.items():
+                current_key = parent_key if parent_key else k
+                if isinstance(v, str) and current_key in include_keys:
+                    collected_text.append(v.strip())
+                elif isinstance(v, (dict, list)):
+                    traverse(v, parent_key=k)
+        elif isinstance(d, list):
+            for item in d:
+                traverse(item, parent_key=parent_key)
+
+    traverse(document)
+    return " ".join(collected_text)
 
 
 # --- Generate summary with T5 ---
-def generate_summary(text, max_input_length=500, max_output_length=100):
-    input_ids = tokenizer.encode("Summarize the following aviation incident: " + text, return_tensors="pt", max_length=max_input_length, truncation=True)
-    summary_ids = model.generate(input_ids, max_length=max_output_length, early_stopping=True)
+# default: max input 500, max output 100
+def generate_summary(text, max_input_length=500,
+                     max_output_length=100):
+    input_ids = tokenizer.encode("Summarize the following aviation report: "
+                                 + text, return_tensors="pt",
+                                 max_length=max_input_length, truncation=True)
+    summary_ids = model.generate(input_ids,
+                                max_length=max_output_length, early_stopping=True)
     return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
 
 
@@ -73,27 +76,36 @@ def summarize_and_compare(acn):
         print(f"No document found for ACN {acn}")
         return
 
-    input_text = collect_text_fields(doc)
+    input_text = collect_text_fields(doc, include_keys=["Narrative","Callback"])
     if not input_text.strip():
         print("Input text is empty after filtering.")
         return
 
-    print("\nGenerating summary...")
     generated_summary = generate_summary(input_text)
-    gold_synopsis = get_synopsis(doc)
+    original_synopsis = get_synopsis(doc)
 
-    print("\n--- GENERATED SUMMARY ---")
-    print(generated_summary)
+    rouge = evaluate_rouge(generated_summary, original_synopsis)
 
-    print("\n--- ORIGINAL SYNOPSIS ---")
-    print(gold_synopsis)
+    P, R, F1 = bert_score_fn(
+        [generated_summary],
+        [original_synopsis],
+        lang="en",
+        verbose=False
+    )
 
-    print("\n--- ROUGE SCORES ---")
-    rouge_scores = evaluate_rouge(generated_summary, gold_synopsis)
-    for metric, score in rouge_scores.items():
-        print(f"{metric}: P={score.precision:.3f}, R={score.recall:.3f}, F1={score.fmeasure:.3f}")
-
-
-# --- Example call ---
-if __name__ == "__main__":
-    summarize_and_compare("2174668")  # Replace with real ACN
+    return {
+        "acn": acn,
+        "input": input_text,
+        "generated": generated_summary,
+        "target": original_synopsis,
+        "rouge": {
+            "rouge1": rouge["rouge1"].fmeasure,
+            "rouge2": rouge["rouge2"].fmeasure,
+            "rougeL": rouge["rougeL"].fmeasure
+        },
+        "bert": {
+            "precision": P.item(),
+            "recall": R.item(),
+            "f1": F1.item()
+        }
+    }

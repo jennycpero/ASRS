@@ -11,19 +11,34 @@
     </form>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="column box">
-            <h4>Generated Summary</h4>
-            <p>{{ summary }}</p>
-            <p><i>Score:</i> {{ scores.rouge-1['f'] if scores }}</p>
-        </div>
-        <div class="column box">
-            <h4>Report Synopsis</h4>
-            <p>{{ synopsis }}</p>
-            <p><i>Score:</i> {{ scores.rouge-1['f'] if scores }}</p>
-        </div>
-    </div>
-</div>
+{% if result %}
+  <h3>Report ACN: {{ result.acn }}</h3>
+
+  <div>
+    <h4>Generated Summary:</h4>
+    <textarea readonly rows="6" cols="100">{{ result.generated }}</textarea>
+  </div>
+
+  <div>
+    <h4>Original Synopsis:</h4>
+    <textarea readonly rows="6" cols="100">{{ result.target }}</textarea>
+  </div>
+
+  <div class="metrics">
+    <h4>ROUGE Scores</h4>
+    <ul>
+      <li>ROUGE-1 F1: {{ result.rouge.rouge1 | round(3) }}</li>
+      <li>ROUGE-2 F1: {{ result.rouge.rouge2 | round(3) }}</li>
+      <li>ROUGE-L F1: {{ result.rouge.rougeL | round(3) }}</li>
+    </ul>
+
+    <h4>BERTScore</h4>
+    <ul>
+      <li>Precision: {{ result.bert.precision | round(3) }}</li>
+      <li>Recall: {{ result.bert.recall | round(3) }}</li>
+      <li>F1: {{ result.bert.f1 | round(3) }}</li>
+    </ul>
+  </div>
+{% endif %}
 
 {% endblock %}
